@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Legal Research Assistant</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        const { useState } = React;
+
+        function App() {
+            const [query, setQuery] = useState('');
+            const [recommendedDocument, setRecommendedDocument] = useState('');
+
+            const handleSubmit = () => {
+                axios.post('/get_recommendation', { query })
+                    .then(response => {
+                        setRecommendedDocument(response.data.recommended_document);
+                    })
+                    .catch(error => {
+                        console.error('There was an error fetching the recommendation!', error);
+                    });
+            };
+
+            return (
+                <div>
+                    <h1>AI-Powered Legal Research Assistant</h1>
+                    <label>
+                        Query:
+                        <input type="text" value={query} onChange={e => setQuery(e.target.value)} />
+                    </label>
+                    <button onClick={handleSubmit}>Get Recommendation</button>
+                    {recommendedDocument && <h2>Recommended Document Type: {recommendedDocument}</h2>}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
